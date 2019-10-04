@@ -1,5 +1,6 @@
 from db_ops.ModelLayer import MachineModel
 from db_ops.ModelLayer import ClusterModel
+from db_ops.ModelLayer import TagModel
 
 
 class Machine:
@@ -24,13 +25,40 @@ class Machine:
 
         machine.insert()
 
-        return {"success": True, "message": "Cluster Added Successfully"}
+        return {"success": True, "message": "Machine Added Successfully"}
 
-    def fetch_machines(self, id=None):
+    def fetch_machines(self, id=None, status=None):
         machine = MachineModel()
-        if id is None:
-            result = machine.fetch_all()
-            return result
-        else:
+        if id is not None:
             result = machine.fetch_by_id(id=id)
             return result
+        elif status is not None:
+            result = machine.fetch_by_status(status=status)
+            return result
+        else:
+            result = machine.fetch_all()
+            return result
+
+    def fetch_machine_with_tag(self, tag_name=None):
+        if tag_name is None:
+            raise Exception("No Tag Given")
+
+        tag = TagModel()
+        result = tag.fetch_by_tag_name(tag_name=tag_name)
+
+        if len(result) == 0:
+            raise Exception("No Entry with given Tag Name")
+
+        machine_ids = [x.get("machine_id") for x in result]
+        machine = MachineModel()
+        result = machine.fetch_by_id(id=tuple(machine_ids))
+        return result
+
+    def delete_machine(self, data):
+        machine = MachineModel()
+        for key, value in data.items():
+            machine.__setattr__(key, value)
+
+        machine.delete()
+
+        return {"success": True, "message": "Machine Deleted Successfully"}

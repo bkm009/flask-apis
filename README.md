@@ -33,6 +33,14 @@
   - Method - POST/GET
 
 
+- Cluster Delete API
+  - URL - 127.0.0.1:8000/cluster
+  - Method - DELETE
+  - Content-Type - application/x-www-form-urlencoded
+  - Form Data
+    - cluster_id: int (example: 1)
+
+
 - Machine Create API
   - URL - 127.0.0.1:8000/machine/create
   - Method - POST
@@ -51,4 +59,36 @@
 
 - Machine Details by Id API
   - URL - 127.0.0.1:8000/machine/details/<machine_id>
+  - Method - POST/GET
+
+
+- Machine Details by Status API
+  - URL - 127.0.0.1:8000/machine/status/<machine_status>  {machine_status can be "start", "stop" or "reboot"}
+  - Method - POST/GET
+
+
+- Machine Details by Tag API
+  - URL - 127.0.0.1:8000/machine/tag/<tag_name>  (example: A)
+  - Method - POST/GET
+
+
+- Machine Delete API
+  - URL - 127.0.0.1:8000/machine
+  - Method - DELETE
+  - Content-Type - application/x-www-form-urlencoded
+  - Form Data
+    - machine_id: int (example: 2)
+
+
+- Tag Add API
+  - URL - 127.0.0.1:8000/tag/add
+  - Method - POST
+  - Content-Type - application/x-www-form-urlencoded
+  - Form Data
+    - tag_name: str (example: A)
+    - machine_id: int (example: 1)
+
+
+- Tag Fetch All Tags API
+  - URL - 127.0.0.1:8000/tag/all
   - Method - POST/GET

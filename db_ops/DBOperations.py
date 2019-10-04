@@ -15,9 +15,14 @@ class SqlDB:
     def __init__(self):
         conn = None
 
+    def turn_on_foreign_key(self):
+        self.conn.execute("PRAGMA foreign_keys=ON ;")
+        self.conn.commit()
+
     def create_connection(self):
         dir = os.path.dirname(os.path.realpath(__file__))
         self.conn = sqlite3.connect(database='{}/sqlite_db'.format(dir), timeout=60)
+        self.turn_on_foreign_key()
         return True
 
     def close_connection(self):
@@ -76,7 +81,10 @@ class SqlDB:
                 query += "WHERE "
                 temp = []
                 for key in condition.keys():
-                    temp.append("{}=:{}".format(key, key))
+                    if type(condition[key]) != tuple:
+                        temp.append("{}=:{}".format(key, key))
+                    else:
+                        temp.append("{} IN {}".format(key, condition[key]))
 
                 query += " AND ".join(temp)
 
@@ -85,6 +93,49 @@ class SqlDB:
             cursor.execute(query, condition)
             result = cursor.fetchall()
             return result
+
+        except sqlite3.OperationalError as e:
+            return "{}".format(e)
+
+        except Exception as e:
+            return "{}".format(e)
+
+    def fetch_unique(self, table_name=None, uniq=[]):
+        try:
+
+            if len(uniq) == 0:
+                raise Exception("No Column Given")
+
+            query = "SELECT DISTINCT {} FROM `{}` ".format(",".join(uniq), table_name)
+            self.conn.row_factory = dict_factory
+            cursor = self.conn.cursor()
+            cursor.execute(query)
+            result = cursor.fetchall()
+            return result
+
+        except sqlite3.OperationalError as e:
+            return "{}".format(e)
+
+        except Exception as e:
+            return "{}".format(e)
+
+    def delete(self, table_name=None, condition={}):
+        try:
+
+            query = "DELETE FROM `{}` ".format(table_name)
+            if len(condition.keys()) > 0:
+                query += "WHERE "
+                temp = []
+                for key in condition.keys():
+                    temp.append("{}=:{}".format(key, key))
+
+                query += " AND ".join(temp)
+
+            self.conn.row_factory = dict_factory
+            cursor = self.conn.cursor()
+            cursor.execute(query, condition)
+            self.conn.commit()
+            return True
 
         except sqlite3.OperationalError as e:
             return "{}".format(e)

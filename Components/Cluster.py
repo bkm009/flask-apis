@@ -20,3 +20,12 @@ class Cluster:
         else:
             result = cluster.fetch_by_id(id=id)
             return result
+
+    def delete_cluster(self, data):
+        cluster = ClusterModel()
+        for key, value in data.items():
+            cluster.__setattr__(key, value)
+
+        cluster.delete()
+
+        return {"success": True, "message": "Cluster Deleted Successfully"}

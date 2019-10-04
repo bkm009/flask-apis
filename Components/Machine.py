@@ -49,9 +49,12 @@ class Machine:
         if len(result) == 0:
             raise Exception("No Entry with given Tag Name")
 
-        machine_ids = [x.get("machine_id") for x in result]
+        machine_ids = tuple([x.get("machine_id") for x in result])
+        if len(result) == 1:
+            machine_ids = (result[0]["machine_id"])
+
         machine = MachineModel()
-        result = machine.fetch_by_id(id=tuple(machine_ids))
+        result = machine.fetch_by_id(id=machine_ids)
         return result
 
     def delete_machine(self, data):
@@ -62,3 +65,18 @@ class Machine:
         machine.delete()
 
         return {"success": True, "message": "Machine Deleted Successfully"}
+
+    def operate(self, data):
+        result = self.fetch_machine_with_tag(tag_name=data['tag_name'])
+
+        if len(result) == 0:
+            raise Exception("No Entry with given Tag Name")
+
+        machine_ids = tuple([x.get("machine_id") for x in result])
+        if len(result) == 1:
+            machine_ids = (result[0]["machine_id"])
+
+        machine = MachineModel()
+        machine.set_operation(id=machine_ids, operation=data["operation"])
+
+        return {"success": True, "message": "Status Updated Successfully"}

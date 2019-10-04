@@ -128,6 +128,21 @@ class MachineModel:
         db.close_connection()
         return result
 
+    def set_operation(self, id, operation):
+        if operation not in ["start", "stop", "reboot"]:
+            raise Exception("Invalid Status Data")
+
+        db = SqlDB()
+        db.create_connection()
+        result = db.update_data(table_name=self.db_table, data_to_update={"machine_status": operation},
+                                condition={"machine_id": id})
+
+        if type(result) == str:
+            raise Exception(result)
+
+        db.close_connection()
+        return result
+
 
 class TagModel:
     tag_id = int

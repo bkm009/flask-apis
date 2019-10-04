@@ -142,3 +142,41 @@ class SqlDB:
 
         except Exception as e:
             return "{}".format(e)
+
+    def update_data(self, table_name=None, data_to_update={}, condition={}):
+
+        try:
+            query = "UPDATE `{}` ".format(table_name)
+            if len(data_to_update.keys()) > 0:
+                query += "SET "
+                temp = []
+                for key in data_to_update.keys():
+                    temp.append("{}=:{}".format(key, key))
+
+                query += " , ".join(temp)
+
+            if len(condition.keys()) > 0:
+                query += " WHERE "
+                temp = []
+                for key in condition.keys():
+                    if type(condition[key]) != tuple:
+                        temp.append("{}=:{}".format(key, key))
+                    else:
+                        temp.append("{} IN {}".format(key, condition[key]))
+
+                query += " AND ".join(temp)
+
+            for key, value in data_to_update.items():
+                condition[key] = value
+
+            self.conn.row_factory = dict_factory
+            cursor = self.conn.cursor()
+            cursor.execute(query, condition)
+            self.conn.commit()
+            return True
+
+        except sqlite3.OperationalError as e:
+            return "{}".format(e)
+
+        except Exception as e:
+            return "{}".format(e)

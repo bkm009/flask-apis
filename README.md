@@ -80,6 +80,16 @@
     - machine_id: int (example: 2)
 
 
+- Machine Status Update API
+  - URL - 127.0.0.1:8000/tag
+  - Method - POST
+  - Content-Type - application/x-www-form-urlencoded
+  - Form Data
+    - tag_name: str (example: A)
+    - operation: str  {operation can be "start", "stop" or "reboot"}
+
+
+
 - Tag Add API
   - URL - 127.0.0.1:8000/tag/add
   - Method - POST

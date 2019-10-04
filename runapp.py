@@ -290,6 +290,30 @@ def all_tags():
         return json_response({"success": False, "error": str(e)}, 500)
 
 
+@app.route('/tag', methods=['POST'])
+def tag_update():
+    try:
+
+        data = dict()
+        data['tag_name'] = request.form.get("tag_name")
+        data['operation'] = request.form.get("operation")
+        check_for_required_keys(data)
+
+        machine = Machine()
+        result = machine.operate(data)
+
+        return json_response({"status": True, "data": result}, 200)
+
+    except KeyError as e:
+        return json_response({"success": False, "error": 'one/more key missing from data. {} missing'.format(e)}, 500)
+
+    except TypeError as e:
+        return json_response({"success": False, "error": 'TypeError: '.format(e)}, 500)
+
+    except Exception as e:
+        return json_response({"success": False, "error": str(e)}, 500)
+
+
 # Keep this at end of file only
 if __name__ == "__main__":
     app.run(host=host, port=port, debug=True)

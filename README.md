@@ -44,11 +44,11 @@
     - instance_type: str (example: type1)
 
 
-- Cluster Details API
+- Machine Details API
   - URL - 127.0.0.1:8000/machine/details
   - Method - POST/GET
 
 
-- Cluster Details by Id API
+- Machine Details by Id API
   - URL - 127.0.0.1:8000/machine/details/<machine_id>
   - Method - POST/GET

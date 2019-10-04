@@ -1,11 +1,12 @@
 from flask import Flask
 from flask import request
-from flask import Response
 
 import json
 from Components.Cluster import Cluster
 
 app = Flask(__name__)
+host = "127.0.0.1"
+port = 8000
 
 
 def json_response(data, status, is_error=False):
@@ -89,3 +90,6 @@ def cluster_details_with_id(cluster_id):
         return json_response({"success": False, "error": str(e)}, 500)
 
 
+# Keep this at end of file only
+if __name__ == "__main__":
+    app.run(host=host, port=port, debug=True)
